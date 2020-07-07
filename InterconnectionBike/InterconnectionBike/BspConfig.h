@@ -24,4 +24,15 @@
 #define  UART_BLE				&huart1			//蓝牙
 #define  UART_CONNECTION		&huart2			//互联接口	
 #define  UART_TFT				&huart3			//TFT屏(武汉晶显)
+
+
+//周期内分段运行
+#define TIMER_ALL_PERIOD        10            //单位ms  定时器运行周期(大周期)
+//按周期运行
+
+#define PERIOD_DO_EXECUTE(TICK,PERIOD)          ((TICK)%(PERIOD/TIMER_ALL_PERIOD) == 0)
+
+#define TEST_SENSOR_DATA        1000				//检测传感器值
+#define ADC_PERIOD				1000
+#define MES_PERIOD              200
 #endif // !__BSPCONFIG_H

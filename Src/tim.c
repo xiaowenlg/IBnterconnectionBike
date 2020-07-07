@@ -96,15 +96,18 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 /* USER CODE BEGIN 1 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	static uint16_t timer2_T_i = 0, timer2_beginplay = 0, timer2_Message_T, timer2_Test;
-	
+	static uint16_t timer2_T_Period = 0, timer2_beginplay = 0, timer2_Message_T, timer2_Test;
+	static uint32_t tick = 0;////////////////////////////////
 	if (htim->Instance == TIM2)
 	{
-		if (timer2_T_i++>100)
+		if (timer2_T_Period++>TIMER_ALL_PERIOD)
 		{
-			timer2_T_i = 0;
-			//Uart_printf(&huart2, "TIM2=%d", timer2_T_i);
-			//此处处理代码
+			timer2_T_Period = 0;
+			if (PERIOD_DO_EXECUTE(tick, TEST_SENSOR_DATA)) //发送温度和电压数据到HMI
+			{
+				Uartx_printf(&huart2, "Timer2=%d", tick);
+			}
+			tick++;
 		}
 	}
 }
