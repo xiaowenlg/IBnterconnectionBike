@@ -123,7 +123,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					ptMsg->tim++;
 					ptMsg->hot += ConsumeHeat(WEIGHT, 1 / 60.00, (float)(ptMsg->freq));//计算热量
 					waitTim = 0;
-					ptMsg->playstate = 0;   //停止播放
+					//ptMsg->playstate = 0;   //停止播放
 				}
 				else
 				{
@@ -138,9 +138,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						}
 						
 					}
+					else
+					{
+						ptMsg->playstate = 0;   //停止播放
+					}
 					//Uartx_printf(&huart1, "waiTim=%d", waitTim);       //检测用
 				}
-				//Uartx_printf(&huart1, "waiTim=%d  sportcount=%d", waitTim,SportCount);
+				Uartx_printf(&huart1, "Tim_playstate=%d\r\n",ptMsg->playstate);
 			}
 			if (PERIOD_DO_EXECUTE(tick, SENDDATA)) //发送一次播放消息
 			{
@@ -171,7 +175,7 @@ void SensorCallBack(uint8_t v)//计次回调函数
 	SportCount++;
 	ptMsg->count = SportCount;
 	//在此处向串口屏发送数据
-	//Uart_printf(&huart1, "Freq=%d      SportCount=%d", ptMsg->freq, SportCount);
+	Uart_printf(&huart1, "Freq=%d      SportCount=%d", ptMsg->freq, SportCount);
 	//Uart_printf(&huart1,"hot=%d",ConsumeHeat(WEIGHT, 1 / 60.00, 50.00))
     xQueueSend(xQueuel_sportmes, (void *)&ptMsg, 10);
 	xQueueFlag = 1;
