@@ -29,6 +29,7 @@ TIM_HandleTypeDef htim2;
 Customerinfo meSportInfo = { 0 };
 Customerinfo   *ptMsg;
 uint16_t TempCount = 0, SportCount = 0;
+
 /* TIM2 init function */
 void MX_TIM2_Init(uint16_t per)        //定时器2             
 {
@@ -138,6 +139,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				}
 				
 			}
+			if (PERIOD_DO_EXECUTE(tick, SENDDATA)) //检测频率
+			{
+				//发送数据到
+			}
 			tick++;
 		}
 	}
@@ -149,7 +154,9 @@ void SensorCallBack(uint8_t v)//计次回调函数
 	TempCount++;
 	SportCount++;
 	//在此处向串口屏发送数据
-	Uart_printf(&huart1, "Freq=%d      SportCount=%d", ptMsg->freq, SportCount);
+	//Uart_printf(&huart1, "Freq=%d      SportCount=%d", ptMsg->freq, SportCount);
+	xQueueSend(xQueuel_sportmes, (void *)&ptMsg, 10);
+
 }
 /* USER CODE END 1 */
 

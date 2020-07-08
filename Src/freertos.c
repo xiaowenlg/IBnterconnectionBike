@@ -29,11 +29,12 @@
 #include "usart.h"
 #include "APPTooL.h"
 #include "tim.h"
+#include "BspConfig.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+QueueHandle_t xQueuel_sportmes;//消息队列  ，在tim.h中声明
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -119,6 +120,11 @@ void StartDefaultTask(void const * argument)
   /* USER CODE BEGIN StartDefaultTask */
 	/* definition and creation of DataDetection */
 	taskENTER_CRITICAL();//进入临界区
+	xQueuel_sportmes = xQueueCreate(5, sizeof(struct SportInfo*));//创建消息队列
+	if (xQueuel_sportmes == 0)
+	{
+		Error_Handler_t(ERROR_XQUEUE_CREAT);
+	}
 	osThreadDef(DataDetection, DataDetection_CallBack, osPriorityNormal, 0, 128);
 	DataDetectionHandle = osThreadCreate(osThread(DataDetection), NULL);
 

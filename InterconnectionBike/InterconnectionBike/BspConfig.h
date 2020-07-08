@@ -33,7 +33,7 @@
 #define PERIOD_DO_EXECUTE(TICK,PERIOD)          ((TICK)%(PERIOD/TIMER_ALL_PERIOD) == 0)
 
 #define TEST_SENSOR_DATA        1000				//检测传感器值
-#define ADC_PERIOD				1000
+#define SENDDATA				100
 #define MES_PERIOD              200
 #define TIMER2_PLAY_WAIT          5                 //等待播放时间，单位秒s
 //语音地址
@@ -62,5 +62,7 @@ typedef struct SportInfo      //运动信息
 	uint16_t tim;//运动时间
 	uint8_t    playstate;//播放状态
 }Customerinfo;
+//错误信息列表
+#define ERROR_XQUEUE_CREAT				0x01			//消息队列创建错误
 
 #endif // !__BSPCONFIG_H

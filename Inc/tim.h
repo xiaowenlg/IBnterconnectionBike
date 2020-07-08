@@ -27,7 +27,7 @@
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "cmsis_os.h"
 /* USER CODE END Includes */
 
 extern TIM_HandleTypeDef htim2;
@@ -40,6 +40,8 @@ void MX_TIM2_Init(uint16_t per);
 
 /* USER CODE BEGIN Prototypes */
 void SensorCallBack(uint8_t v);//传感器回调函数
+
+extern QueueHandle_t xQueuel_sportmes;
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

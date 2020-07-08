@@ -165,7 +165,17 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void Error_Handler_t(uint8_t index)
+{
+	switch (index)
+	{
+	case ERROR_XQUEUE_CREAT:
+		Uart_printf(&huart1, "ERROR_XQUEUE_CREAT!\r\n");
+		break;
+	default:
+		break;
+	}
+}
 /* USER CODE END 4 */
 
 /**
