@@ -245,7 +245,15 @@ void vApplicationIdleHook(void)
 }
 void PlayCallback(uint8_t val)//语音播放回调函数
 {
-	Uart_printf(&huart1, "playstate=%d   Sound is beginning...!\r\n",SportInfo_Get.playstate);
+	uint8_t playarray[PLAYARRAYLENGTH] = { 0 };//播放数据数组
+	uint8_t playdatalen = 0;
+	//Uart_printf(&huart1, "playstate=%d   Sound is beginning...!\r\n",SportInfo_Get.playstate);
+	playdatalen = GetPlayData(SportInfo_Get.count, SportInfo_Get.tim, (double)SportInfo_Get.hot, playarray);
+	//测试打印数据
+	for (int i = 0; i < playdatalen; i++)
+	{
+		Uart_printf(&huart1, "Data%d:%x\r\n", i, playarray[i]);
+	}
 }
 /* USER CODE END Application */
 

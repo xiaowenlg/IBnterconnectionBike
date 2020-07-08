@@ -90,6 +90,7 @@ uint8_t DataSeparation(double dat, uint8_t *res_dat)//Êı¾İ·ÖÀë-------------´øĞ¡Ê
 	}
 	return reslen;
 }
+/*
 uint8_t PrepartData(uint16_t dat, uint8_t *res_dat)// ÓïÒôµØÖ··Ö½â¼ÆËã
 {
 	uint8_t len, q, b, s, g;
@@ -238,8 +239,156 @@ uint8_t PrepartData(uint16_t dat, uint8_t *res_dat)// ÓïÒôµØÖ··Ö½â¼ÆËã
 	}
 
 	return len;//·µ»ØÊı×é³¤¶È
-}
+}*/
+uint8_t PrepartData(uint16_t dat, uint8_t *res_dat)// ÓïÒôµØÖ··Ö½â¼ÆËã
+{
+	uint8_t len, q, b, s, g;
+	if (dat > 9999)
+		dat = 9999;
+	q = dat / 1000; //Ç§Î»
+	b = dat % 1000 / 100;//°ÙÎ»
+	s = dat % 100 / 10; //Ê®Î»
+	g = dat % 10;  //¸öÎ»
 
+	if ((dat <= 9) && (dat >= 0)) //0-9
+	{
+		res_dat[0] = dat + 5;//ÓïÒôµØÖ·5-14
+		len = 1;
+	}
+	if ((dat > 9) && (dat <= 99))//10-99
+	{
+		if ((dat % 10) == 0)
+		{
+			res_dat[0] = s + 5;
+			res_dat[1] = 15;//ÓïÒôµØÖ·15 ÊÇÊ®
+			len = 2;
+		}
+		else
+		{
+			res_dat[0] = s + 5;
+			res_dat[1] = 15;
+			res_dat[2] = g + 5;
+			len = 3;
+		}
+	}
+	if ((dat > 99) && (dat <= 999))//100-999
+	{
+		if ((dat % 100) == 0)
+		{
+			res_dat[0] = b + 5;
+			res_dat[1] = 16;//ÓïÒôµØÖ·16 ÊÇ°Ù
+			len = 2;
+		}
+		else if ((dat % 10) == 0)
+		{
+			res_dat[0] = b + 5;
+			res_dat[1] = 16;//ÓïÒôµØÖ·16 ÊÇ°Ù
+			res_dat[2] = s + 5;
+			res_dat[3] = 15;//ÓïÒôµØÖ·15 ÊÇÊ®
+			len = 4;
+		}
+		else if (dat % 100 > 0 && dat % 100 < 10)
+		{
+			res_dat[0] = b + 5;
+			res_dat[1] = 16;//ÓïÒôµØÖ·16 ÊÇ°Ù
+			res_dat[2] = 5;
+			res_dat[3] = g + 5;
+			len = 4;
+
+		}
+		else
+		{
+			res_dat[0] = b + 5;
+			res_dat[1] = 16;//ÓïÒôµØÖ·16 ÊÇ°Ù
+			res_dat[2] = s + 5;
+			res_dat[3] = 15;//ÓïÒôµØÖ·15 ÊÇÊ®
+			res_dat[4] = g + 5;
+			len = 5;
+		}
+
+	}
+	if ((dat > 999) && (dat <= 9999))//1000-9999
+	{
+		if ((dat % 1000) == 0)
+		{
+			res_dat[0] = q + 5;
+			res_dat[1] = 17;//ÓïÒôµØÖ·17 ÊÇÇ§Î»
+			len = 2;
+		}
+		else if (b == 0 && s == 0 && g != 0)//001
+		{
+			res_dat[0] = q + 5;
+			res_dat[1] = 17;//ÓïÒôµØÖ·16 ÊÇÇ§Î»
+			res_dat[2] = 5;
+			res_dat[3] = g + 5;
+			len = 4;
+		}
+		else if (b == 0 && s != 0 && g == 0)//010
+		{
+			res_dat[0] = q + 5;
+			res_dat[1] = 17;//ÓïÒôµØÖ·16 ÊÇÇ§Î»
+			res_dat[2] = 5;
+			res_dat[3] = s + 5;//ÓïÒôµØÖ·15 ÊÇÊ®
+			res_dat[4] = 15;
+			len = 5;
+		}
+		else if (b == 0 && s != 0 && g != 0)//011--------°ÙÎ»=0 Ê®Î»ºÍ¸öÎ»²»µÈÓÚ0----------------ÒòÎª´Ë´¦ÉÙÅĞ¶ÏÒ»ÖÖ×´Ì¬£¬µ¼ÖÂÖØ¸´²¥±¨
+		{
+			res_dat[0] = q + 5;
+			res_dat[1] = 17;
+			res_dat[2] = 5;
+			res_dat[3] = s + 5;//ÓïÒôµØÖ·15 ÊÇÊ®
+			res_dat[4] = 15;
+			res_dat[5] = g + 5;
+			len = 6;
+
+		}
+		else if (b != 0 && s == 0 && g == 0)//100
+		{
+			res_dat[0] = q + 5;
+			res_dat[1] = 17;//ÓïÒôµØÖ·16 ÊÇÇ§Î»
+			res_dat[2] = b + 5;//ÓïÒôµØÖ·15 ÊÇÊ®
+			res_dat[3] = 16;
+			len = 4;
+		}
+		else if (b != 0 && s != 0 && g == 0)//110*********************************
+		{
+			res_dat[0] = q + 5;
+			res_dat[1] = 17;//ÓïÒôµØÖ·16 ÊÇÇ§Î»
+			res_dat[2] = b + 5;//ÓïÒôµØÖ·15 ÊÇÊ®
+			res_dat[3] = 16;
+			res_dat[4] = s + 5;
+			res_dat[5] = 15;
+			len = 6;
+		}
+		else if (b != 0 && s == 0 && g != 0)//101
+		{
+			res_dat[0] = q + 5;
+			res_dat[1] = 17;//ÓïÒôµØÖ·16 ÊÇÇ§Î»
+			res_dat[2] = b + 5;//ÓïÒôµØÖ·15 ÊÇÊ®
+			res_dat[3] = 16;
+			res_dat[4] = 5;
+			res_dat[5] = g + 5;
+			len = 6;
+		}
+		//else if(b!=0&&s!=0&&g!=0)//111
+		else//111
+		{
+			res_dat[0] = q + 5;
+			res_dat[1] = 17;//ÓïÒôµØÖ·16 ÊÇÇ§Î»
+			res_dat[2] = b + 5;
+			res_dat[3] = 16;
+			res_dat[4] = s + 5;
+			res_dat[5] = 15;
+			res_dat[6] = g + 5;
+			len = 7;
+		}
+
+
+	}
+
+	return len;//·µ»ØÊı×é³¤¶È
+}
 //************************************
 // º¯Êı:    MergedData
 // º¯ÊıÈ«Ãû:  MergedData
@@ -263,7 +412,7 @@ uint8_t MergedData(double numdata, uint8_t *dat, uint8_t com)//dat×îĞ¡ÈİÁ¿9
 		reslen = insertArray(dat, 2, tempdat, templen, 1);
 		break;
 	case 2:
-		dat[0] = S_THISKCAL; //»î¶¯´ÎÊıÊı×é
+		dat[0] = S_THISKCAL; //ÏûºÄÈÈÁ¿Êı×é
 		dat[1] = S_KCAL;
 		dat[2] = S_WELCOME;
 		uint8_t tdat[16] = { 0 };

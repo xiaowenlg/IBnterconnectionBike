@@ -2,17 +2,17 @@
 #define __BSPCONFIG_H
 
 //外设接口引脚定义
-#define Sensor_Mag_Pin GPIO_PIN_0
-#define Sensor_Mag_GPIO_Port GPIOA
+#define Sensor_Mag_Pin					GPIO_PIN_0
+#define Sensor_Mag_GPIO_Port			GPIOA
 
-#define WTN6040_DATA_Pin GPIO_PIN_12
-#define WTN6040_DATA_GPIO_Port GPIOB
+#define WTN6040_DATA_Pin				GPIO_PIN_12
+#define WTN6040_DATA_GPIO_Port			GPIOB
 
-#define WTN6040_CLK_Pin GPIO_PIN_13
-#define WTN6040_CLK_GPIO_Port GPIOB
+#define WTN6040_CLK_Pin					GPIO_PIN_13
+#define WTN6040_CLK_GPIO_Port			GPIOB
 
-#define WTN6040_BUSY_Pin GPIO_PIN_15
-#define WTN6040_BUSY_GPIO_Port GPIOB
+#define WTN6040_BUSY_Pin				GPIO_PIN_15
+#define WTN6040_BUSY_GPIO_Port			GPIOB
 
 //设备串口波特率设置
 #define BLE_BAND				115200        //蓝牙串口
@@ -40,18 +40,19 @@
 #define S_TEN               10               //十
 #define S_HUNDRED			11				//百
 #define S_THOUSAND          12				//千
-#define S_THISSPORT         13				//本次您活动了，
-#define S_SPORTTIM          14              //活动时间
-#define S_THISKCAL          15				//消耗热量
-#define S_NUMBER			16				//次
-#define S_HOUR				17				//时
-#define S_MINUTE            18				//分
-#define S_SECOND			19				//秒
-#define S_KCAL              20				//千卡
+#define S_THISSPORT         0x00		    //本次您活动了，
+#define S_SPORTTIM          0x19              //活动时间
+#define S_THISKCAL          0x02				//消耗热量
+#define S_NUMBER			0x01			//次
+#define S_HOUR				0x12				//时
+#define S_MINUTE            0x13				//分
+#define S_SECOND			0x14				//秒
+#define S_KCAL              0x03				//千卡
 #define S_POINT             21           //点 地址
-#define S_WELCOME           22				//欢迎再次使用
+#define S_WELCOME           0x04				//欢迎再次使用
 #define S_MAXSPORT_TIP		0x20            //运动频率过大提示
 
+#define PLAYARRAYLENGTH        50			//播放数组长度
 //信息
 #define WEIGHT 60.00                     //体重
 //运动信息结构体
