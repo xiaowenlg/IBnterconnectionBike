@@ -35,4 +35,32 @@
 #define TEST_SENSOR_DATA        1000				//检测传感器值
 #define ADC_PERIOD				1000
 #define MES_PERIOD              200
+#define TIMER2_PLAY_WAIT          5                 //等待播放时间，单位秒s
+//语音地址
+#define S_TEN               10               //十
+#define S_HUNDRED			11				//百
+#define S_THOUSAND          12				//千
+#define S_THISSPORT         13				//本次您活动了，
+#define S_SPORTTIM          14              //活动时间
+#define S_THISKCAL          15				//消耗热量
+#define S_NUMBER			16				//次
+#define S_HOUR				17				//时
+#define S_MINUTE            18				//分
+#define S_SECOND			19				//秒
+#define S_KCAL              20				//千卡
+#define S_POINT             21           //点 地址
+#define S_WELCOME           22				//欢迎再次使用
+#define S_MAXSPORT_TIP		0x20            //运动频率过大提示
+
+
+//运动信息结构体
+typedef struct SportInfo      //运动信息
+{
+	uint16_t count;//运动次数
+	uint16_t freq;//运动频率
+	long hot;//消耗热量
+	uint16_t tim;//运动时间
+	uint8_t    playstate;//播放状态
+}Customerinfo;
+
 #endif // !__BSPCONFIG_H

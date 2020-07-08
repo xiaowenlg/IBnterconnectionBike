@@ -556,9 +556,9 @@ void Uart_printf(UART_HandleTypeDef *huart, const char *fmt, ...)
 }
 #endif //  DEBUG
 
-void Uartx_printf(UART_HandleTypeDef * huart, char * fmt, ...)
+void Uartx_printf(UART_HandleTypeDef * huart,  char * fmt, ...)
 {
-	char buffer[100];
+	unsigned char buffer[128];
 	uint16_t i = 0;
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);

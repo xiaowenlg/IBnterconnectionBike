@@ -27,6 +27,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */     
 #include "usart.h"
+#include "APPTooL.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,8 +64,8 @@ void StartDefaultTask(void const * argument);
 void DataDetection_CallBack(void const * argument);
 void Uart_TFT_CallBack(void const * argument);
 void DataInteraction_CallBack(void const * argument);
-
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
 
 /**
   * @brief  FreeRTOS initialization
@@ -182,9 +184,9 @@ void Uart_TFT_CallBack(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  //Uartx_printf(&huart1, "thread3\r\n");
-	  //Uart_printf(&huart2, "Uart2\r\n");
-    osDelay(300);
+	  SingleTrig(SensorCallBack, HAL_GPIO_ReadPin(Sensor_Mag_GPIO_Port, Sensor_Mag_Pin), 0, 1, 0);
+	  //Uart_printf(&huart1, "Uart2\r\n");
+    osDelay(50);
   }
   /* USER CODE END Uart_TFT_CallBack */
 }
@@ -215,13 +217,10 @@ void vApplicationIdleHook(void)
 
 	static uint16_t x = 0;
 	
-	if (x++ > 0xfffe)
-	{
-		x = 0;
-		Uartx_printf(&huart1, "thread--vapp\r\n");
-	}
+	
 		
 }
+
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
