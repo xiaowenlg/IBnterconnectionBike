@@ -1,18 +1,26 @@
 #ifndef __BSPCONFIG_H
 #define __BSPCONFIG_H
-
+#include "stdint.h"
+#include "stm32f1xx_hal.h"
+#include "system.h"
 //外设接口引脚定义
-#define Sensor_Mag_Pin					GPIO_PIN_0
-#define Sensor_Mag_GPIO_Port			GPIOA
+#define REED_Pin GPIO_PIN_0   //干簧管引脚
+#define REED_GPIO_Port GPIOA
+#define REED_EXTI_IRQn EXTI0_IRQn
 
-#define WTN6040_DATA_Pin				GPIO_PIN_12
-#define WTN6040_DATA_GPIO_Port			GPIOB
+//------------------------------------------ 语音芯片WTN6040
+#define WTN_BUSY_Pin			GPIO_PIN_15//忙引脚
+#define WTN_GPIO_Port			GPIOB
+#define WTN_BUSY_EXTI_IRQn		EXTI15_10_IRQn
+#define  CLK_2A                 PBout(13) //时钟输出（位带操作）
+#define  P_DATA_2A               PBout(12) //数据输出（位带操作）
+#define  CLK_2A_PIN             GPIO_PIN_13//时钟引脚
+#define  P_DATA_2A_PIN          GPIO_PIN_12//数据引脚
+#define  SYSCLOSE_PIN		GPIO_PIN_8 //关闭系统引脚，高电平关闭
+#define  SYSCLOSE_PORT		GPIOB
+#define  SYSIO				PBout(8)   //位带操作
 
-#define WTN6040_CLK_Pin					GPIO_PIN_13
-#define WTN6040_CLK_GPIO_Port			GPIOB
 
-#define WTN6040_BUSY_Pin				GPIO_PIN_15
-#define WTN6040_BUSY_GPIO_Port			GPIOB
 
 
 #define  SYSCLOSE_PIN		GPIO_PIN_8 //关闭系统引脚，高电平关闭

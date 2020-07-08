@@ -28,7 +28,7 @@
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+#define  JDQ    PAout(15)      //pa15 电源开关引脚
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */

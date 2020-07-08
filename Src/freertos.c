@@ -30,11 +30,13 @@
 #include "APPTooL.h"
 #include "tim.h"
 #include "BspConfig.h"
+#include "application.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 QueueHandle_t xQueuel_sportmes;//消息队列  ，在tim.h中声明
+uint8_t pstate = 0;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -75,36 +77,10 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @retval None
   */
 void MX_FREERTOS_Init(void) {
-  /* USER CODE BEGIN Init */
-       
-  /* USER CODE END Init */
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
-
-  /* Create the thread(s) */
-  /* definition and creation of defaultTask */
+ 
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
- 
-
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
 
 }
 
@@ -126,19 +102,19 @@ void StartDefaultTask(void const * argument)
 	{
 		Error_Handler_t(ERROR_XQUEUE_CREAT);
 	}
-	osThreadDef(DataDetection, DataDetection_CallBack, osPriorityNormal, 0, 128);
+	osThreadDef(DataDetection, DataDetection_CallBack, 5, 0, 128);
 	DataDetectionHandle = osThreadCreate(osThread(DataDetection), NULL);
 
 	/* definition and creation of Uart_TFT */
-	osThreadDef(Uart_TFT, Uart_TFT_CallBack, osPriorityNormal, 0, 128);
+	osThreadDef(Uart_TFT, Uart_TFT_CallBack, 1, 0, 128);
 	Uart_TFTHandle = osThreadCreate(osThread(Uart_TFT), NULL);
 
 	/* definition and creation of DataInteraction */
-	osThreadDef(DataInteraction, DataInteraction_CallBack, osPriorityNormal, 0, 128);
+	osThreadDef(DataInteraction, DataInteraction_CallBack,3, 0, 128);
 	DataInteractionHandle = osThreadCreate(osThread(DataInteraction), NULL);
 	
   /* Infinite loop */
-	Uart_printf(&huart1, "Start sub stask\r\n");
+	Uart_printf(&huart2, "Start sub stask\r\n");
 	vTaskDelete(defaultTaskHandle); //删除任务
 	taskEXIT_CRITICAL();//推出临界区
 	
@@ -171,7 +147,7 @@ void DataDetection_CallBack(void const * argument)
 
 	  if (xResult == pdPASS)
 	  {
-		  Uart_printf(&huart1, "xQueueData:Freq=%d, Tim=%d ,Sportcount=%d, Cal=%d  playstate=%d\r\n", ptMsg->freq, ptMsg->tim, ptMsg->count,ptMsg->hot,ptMsg->playstate);
+		 Uart_printf(&huart2, "xQueueData:Freq=%d, Tim=%d ,Sportcount=%d, Cal=%d  playstate=%d\r\n", ptMsg->freq, ptMsg->tim, ptMsg->count,ptMsg->hot,ptMsg->playstate);
 		  SportInfo_Get.count = ptMsg->count;
 		  SportInfo_Get.freq = ptMsg->freq;
 		  SportInfo_Get.hot = ptMsg->hot;
@@ -181,7 +157,7 @@ void DataDetection_CallBack(void const * argument)
 		  SingleTrig(PlayCallback, SportInfo_Get.playstate, 0, 0, 1);
 	  }
 	 // Uartx_printf(&huart1, "thread2\r\n");
-    osDelay(200);
+    osDelay(50);
   }
   /* USER CODE END DataDetection_CallBack */
 }
@@ -252,9 +228,9 @@ void PlayCallback(uint8_t val)//语音播放回调函数
 	//测试打印数据
 	for (int i = 0; i < playdatalen; i++)
 	{
-		Uart_printf(&huart1, "Data%d:%x\r\n", i, playarray[i]);
+	Uart_printf(&huart2, "Data%d:%x\r\n", i, playarray[i]);
 	}
-	SportInfo_Get.playstate = 0;
+	pstate = WTN6040_PlayArray(playdatalen, playarray);
 }
 /* USER CODE END Application */
 

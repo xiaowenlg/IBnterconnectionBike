@@ -86,7 +86,7 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
-
+  DWT_Delay_Init();
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */

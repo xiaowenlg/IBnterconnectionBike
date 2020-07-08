@@ -142,6 +142,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					{
 						ptMsg->playstate = 0;   //停止播放
 					}
+					if (pstate)//播放完毕清除播放标志
+					{
+						pstate = 0;
+						SportCount = 0;
+						ptMsg->tim = 0;
+						ptMsg->hot = 0;
+					}
 					//Uartx_printf(&huart1, "waiTim=%d", waitTim);       //检测用
 				}
 				//Uartx_printf(&huart1, "Tim_playstate=%d\r\n",ptMsg->playstate);
@@ -171,6 +178,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void SensorCallBack(uint8_t v)//计次回调函数
 {
 	//Uartx_printf(&huart1, "HelloButton!\r\n");
+	
 	TempCount++;
 	SportCount++;
 	ptMsg->count = SportCount;
@@ -179,7 +187,7 @@ void SensorCallBack(uint8_t v)//计次回调函数
 	//Uart_printf(&huart1,"hot=%d",ConsumeHeat(WEIGHT, 1 / 60.00, 50.00))
     xQueueSend(xQueuel_sportmes, (void *)&ptMsg, 10);
 	xQueueFlag = 1;
-
+	//Line_2A_WTN6(0);
 }
 /* USER CODE END 1 */
 

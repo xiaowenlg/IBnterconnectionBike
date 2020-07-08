@@ -42,6 +42,7 @@ void MX_TIM2_Init(uint16_t per);
 void SensorCallBack(uint8_t v);//传感器回调函数
 
 extern QueueHandle_t xQueuel_sportmes;
+extern uint8_t pstate;
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
