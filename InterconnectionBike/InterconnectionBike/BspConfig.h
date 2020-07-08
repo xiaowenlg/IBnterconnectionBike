@@ -52,7 +52,8 @@
 #define S_WELCOME           22				//欢迎再次使用
 #define S_MAXSPORT_TIP		0x20            //运动频率过大提示
 
-
+//信息
+#define WEIGHT 60.00                     //体重
 //运动信息结构体
 typedef struct SportInfo      //运动信息
 {
@@ -64,5 +65,7 @@ typedef struct SportInfo      //运动信息
 }Customerinfo;
 //错误信息列表
 #define ERROR_XQUEUE_CREAT				0x01			//消息队列创建错误
+
+//
 
 #endif // !__BSPCONFIG_H

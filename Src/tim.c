@@ -23,13 +23,14 @@
 /* USER CODE BEGIN 0 */
 #include "BspConfig.h"
 #include "usart.h"
+#include "APPTooL.h"
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim2;
 Customerinfo meSportInfo = { 0 };
 Customerinfo   *ptMsg;
 uint16_t TempCount = 0, SportCount = 0;
-
+uint8_t xQueueFlag = 0, xQueueFlag_last = 0;
 /* TIM2 init function */
 void MX_TIM2_Init(uint16_t per)        //定时器2             
 {
@@ -120,7 +121,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				if (ptMsg->freq > 0)
 				{ 
 					ptMsg->tim++;
-					//Uartx_printf(&huart1, "Freq=%d,SportCount=%d", ptMsg->freq, SportCount);
+					ptMsg->hot += ConsumeHeat(WEIGHT, 1 / 60.00, (float)(ptMsg->freq));//计算热量
+					waitTim = 0;
+					ptMsg->playstate = 0;   //停止播放
 				}
 				else
 				{
@@ -137,11 +140,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					}
 					//Uartx_printf(&huart1, "waiTim=%d", waitTim);       //检测用
 				}
-				
+				//Uartx_printf(&huart1, "waiTim=%d  sportcount=%d", waitTim,SportCount);
 			}
-			if (PERIOD_DO_EXECUTE(tick, SENDDATA)) //检测频率
+			if (PERIOD_DO_EXECUTE(tick, SENDDATA)) //发送一次播放消息
 			{
-				//发送数据到
+				//发送数据到if (xQueuel_tim!=NULL)
+			
+				    if (ptMsg->playstate != xQueueFlag_last)
+					{
+						if (xQueueFlag==1)
+						{
+							xQueueSendFromISR(xQueuel_sportmes, (void *)&ptMsg, &xHigherPriorityTaskWoken);//发送消息
+							portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+							
+						}
+					}
+					
+					xQueueFlag_last = ptMsg->playstate;
+					
 			}
 			tick++;
 		}
@@ -153,9 +169,12 @@ void SensorCallBack(uint8_t v)//计次回调函数
 	//Uartx_printf(&huart1, "HelloButton!\r\n");
 	TempCount++;
 	SportCount++;
+	ptMsg->count = SportCount;
 	//在此处向串口屏发送数据
 	//Uart_printf(&huart1, "Freq=%d      SportCount=%d", ptMsg->freq, SportCount);
-	xQueueSend(xQueuel_sportmes, (void *)&ptMsg, 10);
+	//Uart_printf(&huart1,"hot=%d",ConsumeHeat(WEIGHT, 1 / 60.00, 50.00))
+    xQueueSend(xQueuel_sportmes, (void *)&ptMsg, 10);
+	xQueueFlag = 1;
 
 }
 /* USER CODE END 1 */

@@ -157,22 +157,23 @@ void DataDetection_CallBack(void const * argument)
 {
   /* USER CODE BEGIN DataDetection_CallBack */
   /* Infinite loop */
+	Customerinfo *ptMsg;
+	BaseType_t xResult;
+	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(1000); /* 设置最大等待时间为200ms */
   for(;;)
   {
-	  if (uart1_rec.reover == 1)
-	  {
-		  uart1_rec.reover = 0;
-		  Uart_printf(&huart1, uart1_rec.redata); //等待蓝牙信息
+	 
+	  xResult = xQueueReceive(
+		  xQueuel_sportmes,                   /* 消息队列句柄 */
+		  (void *)&ptMsg,             /* 这里获取的是结构体的地址 */
+		  (TickType_t)xMaxBlockTime);/* 设置阻塞时间 */
 
-	  }
-	  if (uart2_rec.reover == 1)
+	  if (xResult == pdPASS)
 	  {
-		  uart2_rec.reover = 0;
-		  Uart_printf(&huart2, uart2_rec.redata); //等待蓝牙信息
-
+		  Uart_printf(&huart1, "Freq=%d, Tim=%d ,Sportcount=%d, Cal=%d  playstate=%d", ptMsg->freq, ptMsg->tim, ptMsg->count,ptMsg->hot,ptMsg->playstate);
 	  }
 	 // Uartx_printf(&huart1, "thread2\r\n");
-    osDelay(100);
+    osDelay(200);
   }
   /* USER CODE END DataDetection_CallBack */
 }
@@ -211,7 +212,19 @@ void DataInteraction_CallBack(void const * argument)
   for(;;)
   {
 	  //Uartx_printf(&huart1, "thread4\r\n");
-    osDelay(400);
+	  if (uart1_rec.reover == 1)
+	  {
+		  uart1_rec.reover = 0;
+		  Uart_printf(&huart1, uart1_rec.redata); //等待蓝牙信息
+
+	  }
+	  if (uart2_rec.reover == 1)
+	  {
+		  uart2_rec.reover = 0;
+		  Uart_printf(&huart2, uart2_rec.redata); //等待蓝牙信息
+
+	  }
+    osDelay(100);
   }
   /* USER CODE END DataInteraction_CallBack */
 }

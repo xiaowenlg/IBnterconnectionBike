@@ -20,4 +20,5 @@ uint8_t GetPlayData(uint16_t num, uint16_t tim, double mcal, uint8_t *dat);
 int insertArray(uint8_t *arr, uint16_t arrlen, uint8_t *inarr, uint16_t inarrlen, uint16_t pos);
 int insertOneByte(uint8_t *arr, uint16_t arrlen, uint8_t indata, uint16_t pos);
 uint8_t StrJoin(char *mac, char*id, char *lastdata);
+uint16_t ConsumeHeat(float weight, float tim, float v);
 #endif // !_APPTOOL_H

@@ -372,3 +372,9 @@ uint8_t StrJoin(char *mac, char*id,char *lastdata)
 	//return (strlen(QR_HEAD)+strlen(mac)+strlen(QR_EQNUM)+strlen(id)+strlen(QR_END)+1);
 	return 0;
 }
+
+//¿¨Â·Àï¼ÆËã
+uint16_t ConsumeHeat(float weight, float tim, float v)
+{
+	return (uint16_t)((3 * weight * tim * v * 10) / 40);
+}
