@@ -171,14 +171,14 @@ void DataDetection_CallBack(void const * argument)
 
 	  if (xResult == pdPASS)
 	  {
-		 // Uart_printf(&huart1, "Freq=%d, Tim=%d ,Sportcount=%d, Cal=%d  playstate=%d", ptMsg->freq, ptMsg->tim, ptMsg->count,ptMsg->hot,ptMsg->playstate);
+		  Uart_printf(&huart1, "xQueueData:Freq=%d, Tim=%d ,Sportcount=%d, Cal=%d  playstate=%d\r\n", ptMsg->freq, ptMsg->tim, ptMsg->count,ptMsg->hot,ptMsg->playstate);
 		  SportInfo_Get.count = ptMsg->count;
 		  SportInfo_Get.freq = ptMsg->freq;
 		  SportInfo_Get.hot = ptMsg->hot;
 		  SportInfo_Get.tim = ptMsg->tim;
 		  SportInfo_Get.playstate = ptMsg->playstate;
 
-		  SingleTrig(PlayCallback, ptMsg->playstate, 0, 0, 1);
+		  SingleTrig(PlayCallback, SportInfo_Get.playstate, 0, 0, 1);
 	  }
 	 // Uartx_printf(&huart1, "thread2\r\n");
     osDelay(200);
@@ -254,6 +254,7 @@ void PlayCallback(uint8_t val)//语音播放回调函数
 	{
 		Uart_printf(&huart1, "Data%d:%x\r\n", i, playarray[i]);
 	}
+	SportInfo_Get.playstate = 0;
 }
 /* USER CODE END Application */
 

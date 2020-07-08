@@ -72,6 +72,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(WTN6040_BUSY_GPIO_Port, &GPIO_InitStruct);
 
+  //¹Ø»úÒý½Å
+  GPIO_InitStruct.Pin = SYSCLOSE_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(SYSCLOSE_PORT, &GPIO_InitStruct);
 }
 
 /* USER CODE BEGIN 2 */

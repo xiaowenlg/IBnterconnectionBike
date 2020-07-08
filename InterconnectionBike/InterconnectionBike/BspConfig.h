@@ -14,6 +14,11 @@
 #define WTN6040_BUSY_Pin				GPIO_PIN_15
 #define WTN6040_BUSY_GPIO_Port			GPIOB
 
+
+#define  SYSCLOSE_PIN		GPIO_PIN_8 //关闭系统引脚，高电平关闭
+#define  SYSCLOSE_PORT		GPIOB
+#define  SYSIO				PBout(8)   //位带操作
+
 //设备串口波特率设置
 #define BLE_BAND				115200        //蓝牙串口
 #define DEBUG_BAND				115200        //调试用串口
