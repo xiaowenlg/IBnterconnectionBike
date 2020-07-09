@@ -24,6 +24,7 @@
 #include "BspConfig.h"
 #include "usart.h"
 #include "APPTooL.h"
+#include "application.h"
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim2;
@@ -187,6 +188,7 @@ void SensorCallBack(uint8_t v)//计次回调函数
 	//Uart_printf(&huart1,"hot=%d",ConsumeHeat(WEIGHT, 1 / 60.00, 50.00))
     xQueueSend(xQueuel_sportmes, (void *)&ptMsg, 10);
 	xQueueFlag = 1;
+	
 	//Line_2A_WTN6(0);
 }
 /* USER CODE END 1 */

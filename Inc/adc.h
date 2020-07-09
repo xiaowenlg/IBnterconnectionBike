@@ -38,8 +38,11 @@ extern ADC_HandleTypeDef hadc1;
 
 void MX_ADC1_Init(void);
 
-/* USER CODE BEGIN Prototypes */
 
+/* USER CODE BEGIN Prototypes */
+uint16_t ADC_Conversion(ADC_HandleTypeDef *hadc, uint8_t times);
+int ADC_Map(int x, int in_min, int in_max, int out_min, int out_max);//adc值格式化
+int ADC_GetValue(ADC_HandleTypeDef *hadc, uint8_t times);  //adc 格式后的值（0---5）之间
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

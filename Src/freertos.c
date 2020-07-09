@@ -31,6 +31,7 @@
 #include "tim.h"
 #include "BspConfig.h"
 #include "application.h"
+#include "adc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -148,6 +149,7 @@ void DataDetection_CallBack(void const * argument)
 	  if (xResult == pdPASS)
 	  {
 		 Uart_printf(&huart2, "xQueueData:Freq=%d, Tim=%d ,Sportcount=%d, Cal=%d  playstate=%d\r\n", ptMsg->freq, ptMsg->tim, ptMsg->count,ptMsg->hot,ptMsg->playstate);
+		 write_variable_store_82_1word(0x0007, (ptMsg->count));
 		  SportInfo_Get.count = ptMsg->count;
 		  SportInfo_Get.freq = ptMsg->freq;
 		  SportInfo_Get.hot = ptMsg->hot;
@@ -157,7 +159,7 @@ void DataDetection_CallBack(void const * argument)
 		  SingleTrig(PlayCallback, SportInfo_Get.playstate, 0, 0, 1);
 	  }
 	 // Uartx_printf(&huart1, "thread2\r\n");
-    osDelay(50);
+    osDelay(400);
   }
   /* USER CODE END DataDetection_CallBack */
 }
@@ -175,6 +177,7 @@ void Uart_TFT_CallBack(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+	 
 	  SingleTrig(SensorCallBack, HAL_GPIO_ReadPin(Sensor_Mag_GPIO_Port, Sensor_Mag_Pin), 0, 1, 0);
 	  //Uart_printf(&huart1, "Uart2\r\n");
     osDelay(50);
@@ -231,6 +234,7 @@ void PlayCallback(uint8_t val)//语音播放回调函数
 	Uart_printf(&huart2, "Data%d:%x\r\n", i, playarray[i]);
 	}
 	pstate = WTN6040_PlayArray(playdatalen, playarray);
+	Uart_printf(&huart2, "pstate is %d\r\n",pstate);
 }
 /* USER CODE END Application */
 

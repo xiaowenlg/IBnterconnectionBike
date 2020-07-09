@@ -97,6 +97,8 @@ int main(void)
   MX_TIM2_Init(1000-1);
   MX_USART_UART_Init(UART_BLE, USART1, 115200);
   MX_USART_UART_Init(UART_CONNECTION, USART2, 115200);
+  MX_USART_UART_Init(UART_TFT, USART3, 115200);
+  HAL_ADCEx_Calibration_Start(&hadc1);    //AD校准
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);//打开定时器
   /* USER CODE END 2 */
