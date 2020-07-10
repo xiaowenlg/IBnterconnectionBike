@@ -135,6 +135,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						{
 							Uartx_printf(&huart1, "Begin play...\r\n");
 							ptMsg->playstate = 1;//播放标志位置位
+							pstate = 0;				//播放中标志
 							SportCount = 0;
 						}
 						

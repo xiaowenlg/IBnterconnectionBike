@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
+    <None Include="..\..\README.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\gpio.c">

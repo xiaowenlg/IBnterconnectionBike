@@ -129,7 +129,7 @@ int ADC_GetValue(ADC_HandleTypeDef *hadc, uint8_t times)
 {
 	uint16_t val = 0; int res = 0;
 	val = ADC_Conversion(hadc, times);
-	return ADC_Map(val, 0.0, 3200.0, 0.0, 5.0);
+	return ADC_Map(val, 0.0, 3450.0, 0.0, 5.0);
 }
 /* USER CODE END 1 */
 

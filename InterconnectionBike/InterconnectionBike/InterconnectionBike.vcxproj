@@ -117,6 +117,7 @@
     <ClInclude Include="..\..\Inc\dwt_stm32_delay.h" />
     <ClInclude Include="..\..\Inc\system.h" />
     <ClInclude Include="BspConfig.h" />
+    <None Include="..\..\README.md" />
     <None Include="stm32.mak" />
     <ClCompile Include="$(BSP_ROOT)\STM32F1xxxx\StartupFiles\startup_stm32f103xb.c" />
     <ClInclude Include="..\..\Inc\gpio.h" />

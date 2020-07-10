@@ -73,6 +73,7 @@
 #define RES_AA                  0xaa
 #define RES_55				    0x55
 #define REQUEST_DATA			0x01				//请求数据命令
+#define RESPONSE_DATA			0x02                //对方响应码
 //信息
 #define WEIGHT 60.00                     //体重
 #define WHEEL_R				  0.5       //车轮半径 单位:m

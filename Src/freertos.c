@@ -37,7 +37,11 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 QueueHandle_t xQueuel_sportmes;//消息队列  ，在tim.h中声明
-uint8_t pstate = 0;
+uint8_t pstate = 0;//
+//好友运动信息变量
+uint16_t frend_data[3] = { 0 };
+
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -63,6 +67,8 @@ osThreadId DataInteractionHandle;
 /* USER CODE BEGIN FunctionPrototypes */
 void PlayCallback(uint8_t val);//语音播放回调函数
 Customerinfo SportInfo_Get = { 0 };   //获取到的运动信息
+void SendMessageToTFT(uint16_t address);
+void SendCom(uint8_t com);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
@@ -148,14 +154,14 @@ void DataDetection_CallBack(void const * argument)
 
 	  if (xResult == pdPASS)
 	  {
-		 Uart_printf(&huart2, "xQueueData:Freq=%d, Tim=%d ,Sportcount=%d, Cal=%d  playstate=%d\r\n", ptMsg->freq, ptMsg->tim, ptMsg->count,ptMsg->hot,ptMsg->playstate);
-		 write_variable_store_82_1word(0x0007, (ptMsg->count));
+		  Uart_printf(&huart2, "xQueueData:Freq=%d, Tim=%d ,Sportcount=%d, Cal=%d  playstate=%d\r\n", ptMsg->freq, ptMsg->tim, ptMsg->count, ptMsg->hot, ptMsg->playstate);
+		 Uart_printf(&huart2, "ADC is :%d\r\n", ADC_GetValue(&hadc1, 10));
 		  SportInfo_Get.count = ptMsg->count;
 		  SportInfo_Get.freq = ptMsg->freq;
 		  SportInfo_Get.hot = ptMsg->hot;
 		  SportInfo_Get.tim = ptMsg->tim;
 		  SportInfo_Get.playstate = ptMsg->playstate;
-
+		 SendMessageToTFT(TFT_VARIABLE_START);
 		  SingleTrig(PlayCallback, SportInfo_Get.playstate, 0, 0, 1);
 	  }
 	 // Uartx_printf(&huart1, "thread2\r\n");
@@ -171,7 +177,7 @@ void DataDetection_CallBack(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_Uart_TFT_CallBack */
-void Uart_TFT_CallBack(void const * argument)
+void DataInteraction_CallBack(void const * argument)//
 {
   /* USER CODE BEGIN Uart_TFT_CallBack */
   /* Infinite loop */
@@ -192,10 +198,11 @@ void Uart_TFT_CallBack(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_DataInteraction_CallBack */
-void DataInteraction_CallBack(void const * argument)
+void Uart_TFT_CallBack(void const * argument)
 {
   /* USER CODE BEGIN DataInteraction_CallBack */
   /* Infinite loop */
+	uint32_t tick = 0;
   for(;;)
   {
 	  //Uartx_printf(&huart1, "thread4\r\n");
@@ -208,9 +215,43 @@ void DataInteraction_CallBack(void const * argument)
 	  if (uart2_rec.reover == 1)
 	  {
 		  uart2_rec.reover = 0;
-		  Uart_printf(&huart2, uart2_rec.redata); //等待蓝牙信息
+		  if (uart2_rec.redata[0]==RES_AA&uart2_rec.redata[1]==RES_55)
+		  {
+			  switch (uart2_rec.redata[2])
+			  {
+			  case RESPONSE_DATA:
+				  Uart_printf(&huart2, "receive RESPONSE_DATA\r\n"); //接收到发送码
+				  for (int i = 0; i < uart2_rec.redata[3] / 2; i++)
+				  {
+					  uint16_t temp = 0;
+					  temp = uart2_rec.redata[2 * i + 4];
+					  temp << 8;
+					  temp = temp + uart2_rec.redata[2 * i + 5];
+					  frend_data[i] = temp;
+					  // Uart_printf(&huart2, &temp); //等待蓝牙信息
+				  }
+				  break;
+			  case REQUEST_DATA:
+				  SendDataToFrend();//发送数据
+
+			  default:
+				  break;
+			  }
+			 
+			  //Uart_printf(&huart2, frend_data); //等待蓝牙信息
+			 // HAL_UART_Transmit(&huart2, frend_data, 3, 0xfff);
+		  }
+		 
+		 // Uart_printf(&huart2, "Uart2 is responsed\r\n"); //等待蓝牙信息
 
 	  }
+	  if (tick%2==0)   //请求对方发送数据
+	  {
+		  //SendCom(REQUEST_DATA);
+		  //Uart_printf(&huart2, "xiaowenlg=%d\r\n",tick);
+
+	  }
+	  tick++;
     osDelay(100);
   }
   /* USER CODE END DataInteraction_CallBack */
@@ -235,6 +276,64 @@ void PlayCallback(uint8_t val)//语音播放回调函数
 	}
 	pstate = WTN6040_PlayArray(playdatalen, playarray);
 	Uart_printf(&huart2, "pstate is %d\r\n",pstate);
+}
+
+//向TFT屏发送数据
+void SendMessageToTFT(uint16_t address)
+{
+	uint16_t TFT_SendArray[15] = { 0 };
+	TFT_SendArray[0] = (uint16_t)(SportInfo_Get.freq*(PERIMETER))*60; //速度=车轮周长*转/秒
+	TFT_SendArray[1] = 0;	//心率-----------保留
+	TFT_SendArray[2] = SportInfo_Get.tim / 3600;			//时
+	TFT_SendArray[3] = SportInfo_Get.tim % 3600 / 60;		//分
+	TFT_SendArray[4] = SportInfo_Get.tim % 60;				//秒
+	TFT_SendArray[5] = SportInfo_Get.count * PERIMETER;		//路程=周长*圈数
+	TFT_SendArray[6] = SportInfo_Get.hot;					//热量
+	//
+	TFT_SendArray[8] = SportInfo_Get.freq;
+	TFT_SendArray[9] = ADC_GetValue(&hadc1, 10);			//电池电量
+	//好友信息
+	TFT_SendArray[10] = frend_data[0]/360;
+	TFT_SendArray[11] = frend_data[0]%360/60;
+	TFT_SendArray[12] = frend_data[0]%60;
+	TFT_SendArray[13] = frend_data[1];
+	TFT_SendArray[14] = frend_data[2];
+	write_multiple_variable_store_82(address, 15, TFT_SendArray);
+	write_register_80_1byte(TFT_BUTTON, 1); TFT_Beep(2);// bi-bi 声音
+}
+//发送命令
+void SendCom(uint8_t com)
+{
+	uint8_t resarr[4] = { 0 };
+	resarr[0] = RES_AA; resarr[1] = RES_55;
+	resarr[2] = com;
+	resarr[3] = 4;
+	HAL_UART_Transmit(UART_CONNECTION, resarr, 4, 0xffff);
+}
+void SendDataToFrend() //发送数据到请求端
+{
+	Uart_printf(UART_CONNECTION, "SendMeData is beginning\r\n");
+	uint8_t sendarray[10] = { 0 };
+	//帧头
+	sendarray[0] = RES_AA;
+	sendarray[1] = RES_55;
+	//命令
+	sendarray[2] = RESPONSE_DATA;
+	//数据长度
+	sendarray[3] = 10; 
+	//时间
+	sendarray[4] = SportInfo_Get.tim>>8;			//时间高8位;
+	sendarray[5] = SportInfo_Get.tim & 0x00ff;     //时间低8位
+	//速度
+	sendarray[6] = ((uint16_t)(SportInfo_Get.freq*(PERIMETER)) * 60) >> 8;
+	sendarray[7] = ((uint16_t)(SportInfo_Get.freq*(PERIMETER)) * 60) & 0x00ff;
+	//路程
+	sendarray[8] = ((uint16_t)(SportInfo_Get.count * PERIMETER)) >> 8;
+	sendarray[9] = ((uint16_t)(SportInfo_Get.count * PERIMETER)) & 0x00ff;
+	
+	HAL_UART_Transmit(UART_CONNECTION, sendarray, 10, 0xffff);
+
+
 }
 /* USER CODE END Application */
 
