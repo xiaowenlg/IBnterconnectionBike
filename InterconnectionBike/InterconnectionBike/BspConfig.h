@@ -66,8 +66,13 @@
 #define S_MAXSPORT_TIP		0x20            //运动频率过大提示
 
 #define PLAYARRAYLENGTH        50			//播放数组长度
+
+#define TFT_VARIABLE_START		0x0002      //TFT屏变量起始地址
 //信息
 #define WEIGHT 60.00                     //体重
+#define WHEEL_R				  0.5       //车轮半径 单位:m
+#define PI						3.14 
+#define PERIMETER				2*PI*WHEEL_R
 //运动信息结构体
 typedef struct SportInfo      //运动信息
 {
@@ -79,6 +84,7 @@ typedef struct SportInfo      //运动信息
 }Customerinfo;
 //错误信息列表
 #define ERROR_XQUEUE_CREAT				0x01			//消息队列创建错误
+
 
 //
 
