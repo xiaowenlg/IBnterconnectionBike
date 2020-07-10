@@ -68,6 +68,11 @@
 #define PLAYARRAYLENGTH        50			//播放数组长度
 
 #define TFT_VARIABLE_START		0x0002      //TFT屏变量起始地址
+#define TFT_BUTTON				0x4F		//TFT屏上的按钮
+//互联信息头
+#define RES_AA                  0xaa
+#define RES_55				    0x55
+#define REQUEST_DATA			0x01				//请求数据命令
 //信息
 #define WEIGHT 60.00                     //体重
 #define WHEEL_R				  0.5       //车轮半径 单位:m
